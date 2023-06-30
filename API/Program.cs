@@ -18,6 +18,8 @@ internal class Program
             opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
         });
 
+        builder.Services.AddCors();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -26,6 +28,12 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        // Enable CORS
+        app.UseCors(opt =>
+        {
+           opt.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000","http://192.168.1.116:3000");
+        });
 
         app.UseAuthorization();
 
