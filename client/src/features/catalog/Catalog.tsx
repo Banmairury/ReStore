@@ -1,30 +1,23 @@
 import { Product } from "../../app/models/product"
 import ProductList from "./ProductList";
 import { useState, useEffect } from "react";
+import agent from "../../app/api/agent"
+import LoadingComponent from "../../app/layout/LoadingComponent";
 
 
 
 const Catalog = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading,setLoading] = useState(true)
 
   useEffect(() => {
-    fetchData();
+    agent.Catalog.list()
+    .then(products => setProducts(products))
+    .catch(error => console.log(error))
+    .finally(() => setLoading(false))
   }, []);
 
-  async function fetchData() {
-    try {
-      const response = await fetch('http://localhost:5000/api/products');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const data = await response.json();
-      setProducts(data);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-
+  if(loading) return <LoadingComponent message="Loading products..."/>
 
   return (
     <>
